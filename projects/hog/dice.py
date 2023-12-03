@@ -2,7 +2,7 @@
 
 A dice function takes no arguments and returns a number from 1 to n
 (inclusive), where n is the number of sides on the dice.
-
+.
 Types of dice:
 
  -  Dice can be fair, meaning that they produce each possible outcome with equal
