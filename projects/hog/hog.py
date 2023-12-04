@@ -115,11 +115,47 @@ def play(strategy0, strategy1, score0=0, score1=0, dice=six_sided,
     """
     who = 0  # Who is about to take a turn, 0 (first) or 1 (second)
     # BEGIN PROBLEM 5
-    "*** YOUR CODE HERE ***"
+    last_turn_score0, last_turn_score1 = 0, 0
+    while score0 < goal and score1 < goal :
+        if who == 0:
+            num_rolls = strategy0(score0, score1)
+            this_turn_score0 = take_turn(num_rolls,score1,dice)
+            score0 += this_turn_score0
+            if feral_hogs and abs(last_turn_score0 - num_rolls) == 2:
+                score0 += 3
+            if is_swap(score0, score1):
+                score0, score1 = score1, score0
+                who = other(who)
+                last_turn_score0 = this_turn_score0
+                continue
+            else:
+                if score0 >= goal:
+                    break
+                else: 
+                    who =other(who)
+                    last_turn_score0 = this_turn_score0
+                    continue
+        if who == 1:
+            num_rolls = strategy1(score1, score0)
+            this_turn_score1 = take_turn(num_rolls,score0,dice)
+            score1 += this_turn_score1
+            if feral_hogs and abs(last_turn_score1 - num_rolls) == 2:
+                score1 += 3
+            if is_swap(score1, score0):
+                score0, score1 =score1, score0
+                who = other(who)
+                last_turn_score1 = this_turn_score1
+                continue
+            else:
+                if score1 >= goal:
+                    break
+                else:
+                    who =other(who)
+                    last_turn_score1 = this_turn_score1
     # END PROBLEM 5
     # (note that the indentation for the problem 6 prompt (***YOUR CODE HERE***) might be misleading)
     # BEGIN PROBLEM 6
-    "*** YOUR CODE HERE ***"
+
     # END PROBLEM 6
     return score0, score1
 
@@ -354,3 +390,9 @@ def run(*args):
 
     if args.run_experiments:
         run_experiments()
+
+
+# test
+#always_three = make_test_dice(3)
+#always = always_roll
+#s0, s1 = play(always(0), always(0), score0=9, score1=92, dice=always_three, feral_hogs=False)
