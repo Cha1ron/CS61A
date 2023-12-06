@@ -197,6 +197,11 @@ def preorder(t):
     [2, 4, 6]
     """
     "*** YOUR CODE HERE ***"
+    if is_leaf(t):
+        return [label(t)]
+    else:
+        return [label(t)]+ sum([preorder(son) for son in branches(t)],[]) #sum 函数用于将多个列表合并成一个,[]是初始值,值得学习
+    
 
 
 def has_path(t, phrase):
@@ -229,6 +234,12 @@ def has_path(t, phrase):
     """
     assert len(phrase) > 0, 'no path for empty phrases.'
     "*** YOUR CODE HERE ***"
+    if label(t) != phrase[0]:
+        return False
+    elif len(phrase) == 1:
+        return True
+    else:
+        return any([has_path(son,phrase[1:]) for son in branches(t)]) #any函数用于判断列表中是否有一个为真
 
 
 def interval(a, b):
