@@ -169,9 +169,9 @@ def num_trees(n):
     429
 
     """
-    if ____________________:
-        return _______________
-    return _______________
+    if n == 1 or n == 2:
+        return 1
+    return num_trees(n-1)*2*(2*n-3) // n  
 
 
 def make_advanced_counter_maker():
@@ -203,13 +203,25 @@ def make_advanced_counter_maker():
     >>> tom_counter('global-count')
     1
     """
-    ________________
-    def ____________(__________):
-        ________________
-        def ____________(__________):
-            ________________
+    global_count = 0
+    def make_counter():
+        local_count = 0
+        def message_judge(message):
+            nonlocal global_count, local_count
             "*** YOUR CODE HERE ***"
             # as many lines as you want
-        ________________
-    ________________
+            if message == 'count':
+                local_count += 1
+                return local_count
+            elif message == 'reset':
+                local_count = 0
+            elif message == 'global-count':
+                global_count += 1
+                return global_count
+            elif message == 'global-reset':
+                global_count = 0
+            else:
+                return TypeError('invalid instruction')
+        return message_judge
+    return make_counter
 
