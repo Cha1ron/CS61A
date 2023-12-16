@@ -23,6 +23,9 @@ class Card:
         500
         """
         "*** YOUR CODE HERE ***"
+        self.name = name
+        self.attack = attack
+        self.defense = defense
 
     def power(self, other_card):
         """
@@ -42,13 +45,14 @@ class Card:
         50.0
         """
         "*** YOUR CODE HERE ***"
+        return self.attack - other_card.defense/2
 
 
     def effect(self, other_card, player, opponent):
         """
         Cards have no default effect.
         """
-        return
+        return None
 
     def __repr__(self):
         """
@@ -80,6 +84,10 @@ class Player:
         self.deck = deck
         self.name = name
         "*** YOUR CODE HERE ***"
+        self.hand = []
+        self.cards = 5
+        for i in range(self.cards):
+            self.draw()
 
     def draw(self):
         """Draw a card from the player's deck and add it to their hand.
@@ -94,6 +102,8 @@ class Player:
         """
         assert not self.deck.is_empty(), 'Deck is empty!'
         "*** YOUR CODE HERE ***"
+        self.hand.append(self.deck.draw())
+
 
     def play(self, card_index):
         """Remove and return a card from the player's hand at the given index.
@@ -110,6 +120,7 @@ class Player:
         2
         """
         "*** YOUR CODE HERE ***"
+        return self.hand.pop(card_index)
 
     def display_hand(self):
         """
@@ -150,8 +161,11 @@ class TutorCard(Card):
         True
         """
         "*** YOUR CODE HERE ***"
+        for i in range(3):
+            other_card = opponent.hand.pop(i)
+            opponent.draw()
         #Uncomment the line below when you've finished implementing this method!
-        #print('{} discarded and re-drew 3 cards!'.format(opponent.name))
+        print('{} discarded and re-drew 3 cards!'.format(opponent.name))
 
     def copy(self):
         """
@@ -176,6 +190,7 @@ class TACard(Card):
         300
         """
         "*** YOUR CODE HERE ***"
+        other_card.attack, other_card.defense = other_card.defense, other_card.attack
 
     def copy(self):
         """
@@ -206,10 +221,18 @@ class ProfessorCard(Card):
         """
         orig_opponent_deck_length = len(opponent.deck.cards)
         "*** YOUR CODE HERE ***"
+        for card in player.deck.cards:
+            card.attack += other_card.attack
+            card.defense += other_card.defense
+        left_card = []
+        for card in opponent.deck.cards:
+            if card.attack != other_card.attack or card.defense != other_card.defense:
+                left_card.append(card)
+        opponent.deck.cards = left_card
         discarded = orig_opponent_deck_length - len(opponent.deck.cards)
         if discarded:
             #Uncomment the line below when you've finished implementing this method!
-            #print('{} cards were discarded from {}\'s deck!'.format(discarded, opponent.name))
+            print('{} cards were discarded from {}\'s deck!'.format(discarded, opponent.name))
             return
 
     def copy(self):
