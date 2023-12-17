@@ -1,0 +1,3 @@
+'has_cycle-correct', (0, 70)
+'has_cycle_constant-correct', (512, 70)
+'reverse_other-correct', (1024, 70)

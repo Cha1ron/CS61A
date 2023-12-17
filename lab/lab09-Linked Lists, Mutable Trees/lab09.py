@@ -87,7 +87,15 @@ def has_cycle(link):
     False
     """
     "*** YOUR CODE HERE ***"
-    
+    p = link
+    visit_set = set()
+    while p != Link.empty:
+        if p in visit_set:
+            return True
+        else:
+            visit_set.add(p)
+        p = p.rest
+    return False
 
 def has_cycle_constant(link):
     """Return whether link contains a cycle.
@@ -101,6 +109,16 @@ def has_cycle_constant(link):
     False
     """
     "*** YOUR CODE HERE ***"
+    p_slow, p_fast = link, link
+    while p_fast != Link.empty:
+        p_slow = p_slow.rest
+        if p_fast.rest != Link.empty:
+            p_fast = p_fast.rest.rest
+            if p_slow == p_fast:
+                return True
+        else:
+            break
+    return False
 
 
 def reverse_other(t):
@@ -117,6 +135,15 @@ def reverse_other(t):
     Tree(1, [Tree(8, [Tree(3, [Tree(5), Tree(4)]), Tree(6, [Tree(7)])]), Tree(2)])
     """
     "*** YOUR CODE HERE ***"
+    if t.is_leaf():
+        return 
+    label_list = []
+    for b in t.branches:
+        label_list.append(b.label)
+    for b, new_label in zip(t.branches, reversed(label_list)):
+        b.label = new_label
+        for bb in b.branches:
+            reverse_other(bb)
 
 
 class Link:
