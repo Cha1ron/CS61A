@@ -441,5 +441,3 @@ class Link:
             self = self.rest
         return string + str(self.first) + '>'
 
-l1 = Link(0, Link(2, Link(2, Link(3, Link(1, Link(2, Link(3)))))))
-remove_all(l1, 2)
