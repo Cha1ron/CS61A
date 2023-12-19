@@ -50,7 +50,38 @@ class VendingMachine:
     'Here is your soda.'
     """
     "*** YOUR CODE HERE ***"
+    def __init__(self, product, price):
+        self.product = product
+        self.price = price
+        self.balance = 0
+        self.stock = 0
 
+    def vend(self):
+        if self.stock == 0:
+            return 'Inventory empty. Restocking required.'
+        elif self.balance <self.price:
+            return 'You must add $'+str(self.price-self.balance)+' more funds.'
+        elif self.balance == self.price:
+            self.stock -= 1
+            self.balance = 0
+            return 'Here is your '+self.product+'.'
+        else:
+            self.stock -= 1
+            change = self.balance - self.price
+            self.balance = 0
+            return 'Here is your '+self.product+' and $'+str(change)+' change.'
+
+    
+    def add_funds(self, amount):
+        if self.stock == 0:
+            return 'Inventory empty. Restocking required. Here is your ${0}.'.format(str(amount))
+        else:
+            self.balance += amount
+            return 'Current balance: ${0}'.format(str(self.balance))
+
+    def restock(self, num):
+        self.stock += num
+        return 'Current {0} stock: {1}'.format(self.product,str(self.stock))
 
 class Mint:
     """A mint creates coins by stamping on years.
@@ -88,9 +119,12 @@ class Mint:
 
     def create(self, kind):
         "*** YOUR CODE HERE ***"
+        return kind(self.year)
 
     def update(self):
         "*** YOUR CODE HERE ***"
+        self.year = Mint.current_year
+
 
 class Coin:
     def __init__(self, year):
@@ -98,6 +132,7 @@ class Coin:
 
     def worth(self):
         "*** YOUR CODE HERE ***"
+        return self.cents + max(0, Mint.current_year - self.year - 50)
 
 class Nickel(Coin):
     cents = 5
@@ -132,6 +167,41 @@ def is_bst(t):
     False
     """
     "*** YOUR CODE HERE ***"
+    def bst_max(t):
+        if t.is_leaf():
+            return t.label
+        elif len(t.branches) == 1:
+            if t.label < t.branches[0].label:
+                return bst_max(t.branches[0])
+            else:
+                return t.label
+        else:
+            return bst_max(t.branches[1])
+        
+    def bst_min(t):
+        if t.is_leaf():
+            return t.label
+        elif len(t.branches) == 1:
+            if t.label > t.branches[0].label:
+                return bst_min(t.branches[0])
+            else:
+                return t.label
+        else:
+            return bst_min(t.branches[0])  #这里不用考虑t.branches[1]的情况，因为二叉树右边孩子的值一定大于根节点的值，所以不用考虑右边孩子的情况
+
+    if t.is_leaf():
+        return True
+    if len(t.branches) == 1:
+        if t.label> t.branches[0].label:
+            return is_bst(t.branches[0]) and t.label >= bst_max(t.branches[0])
+        else:
+            return is_bst(t.branches[0]) and t.label <= bst_min(t.branches[0])
+    elif len(t.branches) == 2:
+        le, ri = t.branches[0], t.branches[1]
+        return is_bst(t.branches[0]) and is_bst(t.branches[1]) and bst_max(le) <= t.label <bst_min(ri)
+    else:
+        return False
+    
 
 
 def store_digits(n):
@@ -150,6 +220,15 @@ def store_digits(n):
     >>> print("Do not use str or reversed!") if any([r in cleaned for r in ["str", "reversed"]]) else None
     """
     "*** YOUR CODE HERE ***"
+    def helper(lst, n):
+        if n == 0:
+            return lst
+        else:
+            lst = Link(n%10,lst)
+            return helper(lst, n//10)
+    ans = Link(n%10, Link.empty)
+    return helper(ans, n//10)
+ 
 
 
 def path_yielder(t, value):
@@ -188,11 +267,13 @@ def path_yielder(t, value):
     """
 
     "*** YOUR CODE HERE ***"
-
-    for _______________ in _________________:
-        for _______________ in _________________:
-
+    if t.label == value:
+        yield [t.label]
+    for b in t.branches:
+        for path in path_yielder(b, value):
+            yield [t.label] + path
             "*** YOUR CODE HERE ***"
+
 
 
 def remove_all(link , value):
@@ -213,7 +294,13 @@ def remove_all(link , value):
     <0 1>
     """
     "*** YOUR CODE HERE ***"
-
+    if link is Link.empty or link.rest is Link.empty:
+        return
+    elif link.rest.first == value:
+        link.rest = link.rest.rest
+        remove_all(link, value)
+    else:
+        remove_all(link.rest, value)
 
 def deep_map(f, link):
     """Return a Link with the same structure as link but with fn mapped over
@@ -229,6 +316,13 @@ def deep_map(f, link):
     <<2 <4 6> 8> <<10>>>
     """
     "*** YOUR CODE HERE ***"
+    if link == Link.empty:
+        return Link.empty
+    if isinstance(link.first, Link):
+        first = deep_map(f, link.first)
+    else:
+        first = f(link.first)
+    return Link(first, deep_map(f, link.rest))
 
 
 class Tree:
@@ -347,3 +441,5 @@ class Link:
             self = self.rest
         return string + str(self.first) + '>'
 
+l1 = Link(0, Link(2, Link(2, Link(3, Link(1, Link(2, Link(3)))))))
+remove_all(l1, 2)
